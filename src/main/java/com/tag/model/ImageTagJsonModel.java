@@ -9,17 +9,22 @@ import java.util.List;
  */
 public class ImageTagJsonModel {
 
+    private Integer id;
+
     private List<TagModel> tagModels;
 
     private String error;
 
-    public ImageTagJsonModel(@JsonProperty("tagModels") List<TagModel> tagModels){
+    public ImageTagJsonModel(@JsonProperty("id") Integer id, @JsonProperty("tagModels") List<TagModel> tagModels) {
+        this.id = id;
         this.tagModels = tagModels;
     }
 
-    public ImageTagJsonModel(@JsonProperty("error") String error){
+    public ImageTagJsonModel(@JsonProperty("id") Integer id, @JsonProperty("error") String error) {
+        this.id = id;
         this.error = error;
     }
+
 
     public List<TagModel> getTagModels() {
         return tagModels;
@@ -28,5 +33,9 @@ public class ImageTagJsonModel {
 
     public String getError() {
         return error;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }
