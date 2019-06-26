@@ -33,7 +33,7 @@ public class GoogleVisionLabelHelper {
 
     private static final String APPLICATION_NAME = "Google-VisionLabelSample/1.0";
 
-    private static final int MAX_LABELS = 20;
+    private static final int MAX_LABELS = 100;
 
     private static Vision vision;
 
