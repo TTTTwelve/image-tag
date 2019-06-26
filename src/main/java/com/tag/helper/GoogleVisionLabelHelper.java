@@ -8,7 +8,9 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
+import com.tag.constants.ImageTagErrorType;
 import com.tag.model.ImageTagJsonModel;
+import com.tag.model.TagError;
 import com.tag.model.TagModel;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -59,6 +61,7 @@ public class GoogleVisionLabelHelper {
     public static ImageTagJsonModel getLabelsByUrl(String path) throws IOException {
 
         byte[] data = toByte(new URL(path));
+        long time = System.currentTimeMillis();
         AnnotateImageRequest request =
                 new AnnotateImageRequest()
 //                        .setImage(new Image().setSource(new ImageSource().setImageUri(path)))
@@ -75,6 +78,7 @@ public class GoogleVisionLabelHelper {
         BatchAnnotateImagesResponse batchResponse = annotate.execute();
         assert batchResponse.getResponses().size() == 1;
         AnnotateImageResponse response = batchResponse.getResponses().get(0);
+        logger.info("请求io时长={}ms", System.currentTimeMillis() - time);
         return getResultModel(response, null);
     }
 
@@ -148,20 +152,20 @@ public class GoogleVisionLabelHelper {
 
     private static ImageTagJsonModel getResultModel(AnnotateImageResponse response, Integer id) {
         if (response.getLabelAnnotations() == null) {
-            return new ImageTagJsonModel(id,
+            return new ImageTagJsonModel(id, null,
                     response.getError() != null
-                            ? response.getError().getMessage()
-                            : "Unknown error getting image annotations");
+                            ? new TagError(ImageTagErrorType.ApiError.getValue(), response.getError().getMessage())
+                            : new TagError(ImageTagErrorType.UnknownError.getValue(), "Unknown error getting image annotations"));
         }
         return new ImageTagJsonModel(id,
                 response.getLabelAnnotations()
                         .stream()
                         .map(e -> new TagModel(e.getConfidence(), e.getDescription(), e.getMid(), e.getScore(), e.getTopicality()))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()), null
         );
     }
 
     private static ImageTagJsonModel getResultModel(String error, Integer id) {
-        return new ImageTagJsonModel(id, error);
+        return new ImageTagJsonModel(id, null, new TagError(ImageTagErrorType.IOError.getValue(), error));
     }
 }

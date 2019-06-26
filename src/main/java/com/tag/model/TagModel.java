@@ -1,5 +1,6 @@
 package com.tag.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -13,6 +14,7 @@ public class TagModel {
     private final Float score;
     private final Float topicality;
 
+    @JsonCreator
     public TagModel(@JsonProperty("confidence") Float confidence,
                     @JsonProperty("description") String description,
                     @JsonProperty("mid") String mid,

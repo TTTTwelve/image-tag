@@ -1,5 +1,6 @@
 package com.tag.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -13,25 +14,21 @@ public class ImageTagJsonModel {
 
     private List<TagModel> tagModels;
 
-    private String error;
+    private TagError error;
 
-    public ImageTagJsonModel(@JsonProperty("id") Integer id, @JsonProperty("tagModels") List<TagModel> tagModels) {
-        this.id = id;
-        this.tagModels = tagModels;
-    }
-
-    public ImageTagJsonModel(@JsonProperty("id") Integer id, @JsonProperty("error") String error) {
+    @JsonCreator
+    public ImageTagJsonModel(@JsonProperty("id") Integer id, @JsonProperty("tagModels") List<TagModel> tagModels, @JsonProperty("error") TagError error) {
         this.id = id;
         this.error = error;
+        this.tagModels = tagModels;
     }
-
 
     public List<TagModel> getTagModels() {
         return tagModels;
     }
 
 
-    public String getError() {
+    public TagError getError() {
         return error;
     }
 
